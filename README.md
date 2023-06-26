@@ -75,5 +75,7 @@ export default defineConfig({
 And install dependencies: 
 
 ```bash
-npm install --save-dev @esbuild-plugins/node-globals-polyfill @esbuild-plugins/node-modules-polyfill rollup-plugin-node-polyfills
+npm install --save-dev @esbuild-plugins/node-globals-polyfill \
+  @esbuild-plugins/node-modules-polyfill \
+  rollup-plugin-node-polyfills
 ```
