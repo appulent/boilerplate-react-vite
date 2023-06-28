@@ -78,3 +78,127 @@ npm install --save-dev @esbuild-plugins/node-globals-polyfill \
   @esbuild-plugins/node-modules-polyfill \
   rollup-plugin-node-polyfills
 ```
+
+## Jest Testing
+
+Installation of Jest using Typescript and SWC.
+
+Install dependencies:
+  ```bash
+  npm install -D jest \
+    jest-environment-jsdom \
+    @swc/core \
+    @swc/jest \
+    @testing-library/jest-dom \
+    @testing-library/react \
+    @testing-library/user-event \
+    @types/jest
+  ```
+
+  Note: the `jest` dependencies introduces 26 moderate vaulnerabilities. To run the audit with only production dependencies, `npm audit --omit=dev`.
+
+Jest does not know how to handle css, svg and other files. The following adds a simple stub transformer that converts these files to empty strings.
+
+Create a `jest` folder in the root of the project. Create a `config` folder inside the `jest` folder.
+
+Create a `stubTransformer.cjs` file inside the `config` folder. Add the following to the `stubTransformer.cjs` file:
+  ```js
+  module.exports = {
+    process: function() {
+      return {
+        code: 'module.exports = ""'
+      }
+    }
+  }
+  ```
+
+Create a `jestSetup.ts` file inside the `config` folder. Add the following to the `jestSetup.ts` file:
+  ```ts
+  import '@testing-library/jest-dom'
+  ```
+
+Add the following to the `package.json` file:
+  
+  For jest config:
+  ```json
+  "jest": {
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.(t|j)sx?$": [
+        "@swc/jest",
+        {
+          "jsc": {
+            "transform": {
+              "react": {
+                "runtime": "automatic"
+              }
+            }
+          }
+        }
+      ],
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$": "<rootDir>/jest/config/stubTransformer.cjs"
+    },
+    "extensionsToTreatAsEsm": [
+      ".ts",
+      ".tsx"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest/config/jestSetup.ts"
+    ]
+  }
+  ```
+
+  Script to run tests:
+  ```json 
+  "scripts": {
+    "test": "jest"
+  }
+  ```
+
+We do not want the tests files to be included in the final build. To exclude them create a file named `tsconfig.build.json` and add the following to the file:
+  ```json
+  {
+    "extends": "./tsconfig.json",
+    "exclude": [
+      "./src/__tests__/**",
+      "./src/__mocks__/**",
+      "src/**/*.test.ts", 
+      "src/**/*.test.tsx"
+    ]
+  }
+  ```
+
+Change the build script in the `package.json` to use this file:
+  ```json
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json && vite build"
+  }
+  ```
+
+## Handling CommonJS Modules
+
+eslint will complain about CommonJS modules. To handle this, modify the env attribute in the `.eslintrc.cjs` file:
+
+```js
+// Add the node value
+env: { browser: true, es2020: true, node: true },
+```
+
+## Prettier
+
+The prettier project recommends NOT running the formatting as part of a linter. They provide a plugin that will override eslint formatters.
+
+Install the dependencies:
+```bash
+npm install --save-dev eslint-config-prettier
+```
+
+Then add the following to the `.eslintrc.cjs` file, makong sure prettier is last so it can override the other configs:
+```js
+{
+  extends: [
+    "some-other-config-you-use",
+    "prettier"
+  ]
+}
+```
