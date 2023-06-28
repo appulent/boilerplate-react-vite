@@ -70,6 +70,7 @@
   "lint-staged": {
     "*.{cjs,js,jsx,ts,tsx}": [
       "eslint --fix",
+      "jest --bail --findRelatedTests",
       "prettier --write"
     ],
     "*.{css,scss}": [
