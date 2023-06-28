@@ -116,6 +116,7 @@ Create a `jestSetup.ts` file inside the `config` folder. Add the following to th
   ```ts
   import '@testing-library/jest-dom'
   ```
+This is need to be able to use the jest-dom matchers in the tests without having to include the import.
 
 Add the following to the `package.json` file:
   
