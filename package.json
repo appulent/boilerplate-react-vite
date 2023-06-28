@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest --coverage",
+    "prepare": "husky install"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -32,8 +33,10 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "husky": "^8.0.3",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
+    "lint-staged": "^13.2.3",
     "prettier": "^2.8.8",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "typescript": "^5.0.2",
@@ -62,6 +65,18 @@
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/jest/config/jestSetup.ts"
+    ]
+  },
+  "lint-staged": {
+    "*.{cjs,js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,scss}": [
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
     ]
   }
 }
