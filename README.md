@@ -268,3 +268,9 @@ And run it once:
 ```bash
 npm run prepare
 ```
+
+Add a pre-commit hook to huskey that runs lint-staged:
+
+```bash
+npx husky add .husky/pre-commit "npx lint-staged"
+```
