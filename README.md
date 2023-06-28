@@ -179,6 +179,21 @@ Change the build script in the `package.json` to use this file:
 }
 ```
 
+Optional: Add coverage threshold to the `package.json` file:
+
+```json
+"jest": {
+  "coverageThreshold": {
+    "global": {
+      "branches": 80,
+      "functions": 80,
+      "lines": 80,
+      "statements": 80
+    }
+  }
+}
+```
+
 ## Handling CommonJS Modules
 
 eslint will complain about CommonJS modules. To handle this, modify the env attribute in the `.eslintrc.cjs` file:
